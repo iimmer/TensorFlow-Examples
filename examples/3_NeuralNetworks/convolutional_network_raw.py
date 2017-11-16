@@ -1,7 +1,6 @@
 """ Convolutional Neural Network.
 
-Build and train a convolutional neural network with TensorFlow.
-This example is using the MNIST database of handwritten digits
+用tensorflow 底层基本函数构建卷积神经网络.
 (http://yann.lecun.com/exdb/mnist/)
 
 Author: Aymeric Damien
@@ -16,13 +15,13 @@ import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 
-# Training Parameters
+# 训练参数
 learning_rate = 0.001
-num_steps = 200
+num_steps = 10
 batch_size = 128
-display_step = 10
+display_step = 100
 
-# Network Parameters
+# 神经网络参数
 num_input = 784 # MNIST data input (img shape: 28*28)
 num_classes = 10 # MNIST total classes (0-9 digits)
 dropout = 0.75 # Dropout, probability to keep units
@@ -71,7 +70,7 @@ def conv_net(x, weights, biases, dropout):
     fc1 = tf.nn.relu(fc1)
     # Apply Dropout
     fc1 = tf.nn.dropout(fc1, dropout)
-
+    
     # Output, class prediction
     out = tf.add(tf.matmul(fc1, weights['out']), biases['out'])
     return out
@@ -95,13 +94,14 @@ biases = {
     'out': tf.Variable(tf.random_normal([num_classes]))
 }
 
-# Construct model
+# 构造模型
 logits = conv_net(X, weights, biases, keep_prob)
 prediction = tf.nn.softmax(logits)
 
 # Define loss and optimizer
-loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
-    logits=logits, labels=Y))
+mm=tf.nn.softmax_cross_entropy_with_logits(
+    logits=logits, labels=Y)
+loss_op = tf.reduce_mean(mm)
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 train_op = optimizer.minimize(loss_op)
 
@@ -122,7 +122,9 @@ with tf.Session() as sess:
     for step in range(1, num_steps+1):
         batch_x, batch_y = mnist.train.next_batch(batch_size)
         # Run optimization op (backprop)
-        sess.run(train_op, feed_dict={X: batch_x, Y: batch_y, keep_prob: 0.8})
+        _,dd1,dd2=sess.run([train_op,prediction,logits], feed_dict={X: batch_x, Y: batch_y, keep_prob: 0.8})
+       
+        print("ddddddd\n",dd1[1],"ccccccc\n",dd2[1])
         if step % display_step == 0 or step == 1:
             # Calculate batch loss and accuracy
             loss, acc = sess.run([loss_op, accuracy], feed_dict={X: batch_x,

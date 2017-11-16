@@ -148,6 +148,7 @@ with tf.Session() as sess:
                 g[j].reshape([28, 28])
 
 # 图像打印要放在 with tf.Session as sess: 结构之外.
+#test
 print("Original Images")
 plt.figure(figsize=(n, n))
 plt.imshow(canvas_orig, origin="upper", cmap="gray")
