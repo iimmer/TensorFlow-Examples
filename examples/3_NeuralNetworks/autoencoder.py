@@ -147,15 +147,16 @@ with tf.Session() as sess:
             canvas_recon[i * 28:(i + 1) * 28, j * 28:(j + 1) * 28] = \
                 g[j].reshape([28, 28])
 
-    print("Original Images")
-    plt.figure(figsize=(n, n))
-    plt.imshow(canvas_orig, origin="upper", cmap="gray")
-    plt.show()
+# 图像打印要放在 with tf.Session as sess: 结构之外.
+print("Original Images")
+plt.figure(figsize=(n, n))
+plt.imshow(canvas_orig, origin="upper", cmap="gray")
+plt.show()
 
-    print("Reconstructed Images")
-    plt.figure(figsize=(n, n))
-    plt.imshow(canvas_recon, origin="upper", cmap="gray")
-    plt.show()
+print("Reconstructed Images")
+plt.figure(figsize=(n, n))
+plt.imshow(canvas_recon, origin="upper", cmap="gray")
+plt.show()
 
 """
 总结:
