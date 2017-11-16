@@ -1,11 +1,11 @@
-""" Convolutional Neural Network.
+""" 卷积神经网络
 
-Build and train a convolutional neural network with TensorFlow.
-This example is using the MNIST database of handwritten digits
+用tensorflow建立了一个卷积神经网络来识别mnist数据.
 (http://yann.lecun.com/exdb/mnist/)
 
-This example is using TensorFlow layers API, see 'convolutional_network_raw' 
-example for a raw implementation with variables.
+这个例子使用了tensorflow封装好的算法API实现, 如果想看仅使用tensorflow基本数据类型
+和数学运算实现的卷积网络,请看 'convolutional_network_raw' 
+
 
 Author: Aymeric Damien
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
@@ -20,7 +20,7 @@ import tensorflow as tf
 
 # Training Parameters
 learning_rate = 0.001
-num_steps = 2000
+num_steps = 20
 batch_size = 128
 
 # Network Parameters
