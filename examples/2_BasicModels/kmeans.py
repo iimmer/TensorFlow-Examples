@@ -15,13 +15,14 @@ from __future__ import print_function
 import numpy as np
 import tensorflow as tf
 from tensorflow.contrib.factorization import KMeans
-
-# Ignore all GPUs, tf random forest does not benefit from it.
-import os
-os.environ["CUDA_VISIBLE_DEVICES"] = ""
-
 # Import MNIST data
 from tensorflow.examples.tutorials.mnist import input_data
+
+# Ignore all GPUs, tf random forest does not benefit from it.
+# import os
+# os.environ["CUDA_VISIBLE_DEVICES"] = ""
+
+
 mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 full_data_x = mnist.train.images
 
@@ -42,8 +43,7 @@ kmeans = KMeans(inputs=X, num_clusters=k, distance_metric='cosine',
                 use_mini_batch=True)
 
 # Build KMeans graph
-(all_scores, cluster_idx, scores, cluster_centers_initialized, init_op,
-train_op) = kmeans.training_graph()
+(all_scores, cluster_idx, scores, cluster_centers_initialized, cluster_centers_var,init_op,train_op) = kmeans.training_graph()
 cluster_idx = cluster_idx[0] # fix for cluster_idx being a tuple
 avg_distance = tf.reduce_mean(scores)
 

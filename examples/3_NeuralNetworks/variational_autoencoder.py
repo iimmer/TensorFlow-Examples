@@ -33,7 +33,7 @@ mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 
 # Parameters
 learning_rate = 0.001
-num_steps = 30000
+num_steps = 20000
 batch_size = 64
 
 # Network Parameters
@@ -137,7 +137,7 @@ with tf.Session() as sess:
             canvas[(n - i - 1) * 28:(n - i) * 28, j * 28:(j + 1) * 28] = \
             x_mean[0].reshape(28, 28)
 
-    plt.figure(figsize=(8, 10))
-    Xi, Yi = np.meshgrid(x_axis, y_axis)
-    plt.imshow(canvas, origin="upper", cmap="gray")
-    plt.show()
+plt.figure(figsize=(8, 10))
+Xi, Yi = np.meshgrid(x_axis, y_axis)
+plt.imshow(canvas, origin="upper", cmap="gray")
+plt.show()

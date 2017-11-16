@@ -1,6 +1,7 @@
 """ Convolutional Neural Network.
 
-用tensorflow 底层基本函数构建卷积神经网络.
+Build and train a convolutional neural network with TensorFlow.
+This example is using the MNIST database of handwritten digits
 (http://yann.lecun.com/exdb/mnist/)
 
 Author: Aymeric Damien
@@ -15,13 +16,13 @@ import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 mnist = input_data.read_data_sets("/tmp/data/", one_hot=True)
 
-# 训练参数
+# Training Parameters
 learning_rate = 0.001
-num_steps = 10
+num_steps = 1
 batch_size = 128
-display_step = 100
+display_step = 1000
 
-# 神经网络参数
+# Network Parameters
 num_input = 784 # MNIST data input (img shape: 28*28)
 num_classes = 10 # MNIST total classes (0-9 digits)
 dropout = 0.75 # Dropout, probability to keep units
@@ -32,7 +33,7 @@ Y = tf.placeholder(tf.float32, [None, num_classes])
 keep_prob = tf.placeholder(tf.float32) # dropout (keep probability)
 
 
-# Create some wrappers for simplicity
+# 创建卷积封装函数以简化流程
 def conv2d(x, W, b, strides=1):
     # Conv2D wrapper, with bias and relu activation
     x = tf.nn.conv2d(x, W, strides=[1, strides, strides, 1], padding='SAME')
@@ -46,7 +47,7 @@ def maxpool2d(x, k=2):
                           padding='SAME')
 
 
-# Create model
+# 建立模型
 def conv_net(x, weights, biases, dropout):
     # MNIST data input is a 1-D vector of 784 features (28*28 pixels)
     # Reshape to match picture format [Height x Width x Channel]
@@ -54,23 +55,30 @@ def conv_net(x, weights, biases, dropout):
     x = tf.reshape(x, shape=[-1, 28, 28, 1])
 
     # Convolution Layer
-    conv1 = conv2d(x, weights['wc1'], biases['bc1'])
+    conv1 = conv2d(x, weights['wc1'], biases['bc1']) 
+    print("conv1",conv1.get_shape())
+    print("weights['wc1']",weights['wc1'].get_shape())
     # Max Pooling (down-sampling)
     conv1 = maxpool2d(conv1, k=2)
+    print(conv1.get_shape())
+
 
     # Convolution Layer
     conv2 = conv2d(conv1, weights['wc2'], biases['bc2'])
+    print (weights['wc2'].get_shape())
     # Max Pooling (down-sampling)
+    print ('conv2',conv2.get_shape())
     conv2 = maxpool2d(conv2, k=2)
-
+    print ('conv2',conv2.get_shape())
     # Fully connected layer
     # Reshape conv2 output to fit fully connected layer input
     fc1 = tf.reshape(conv2, [-1, weights['wd1'].get_shape().as_list()[0]])
+    print (weights['wd1'].get_shape().as_list()[0])
     fc1 = tf.add(tf.matmul(fc1, weights['wd1']), biases['bd1'])
     fc1 = tf.nn.relu(fc1)
     # Apply Dropout
     fc1 = tf.nn.dropout(fc1, dropout)
-    
+
     # Output, class prediction
     out = tf.add(tf.matmul(fc1, weights['out']), biases['out'])
     return out
@@ -94,14 +102,13 @@ biases = {
     'out': tf.Variable(tf.random_normal([num_classes]))
 }
 
-# 构造模型
+# Construct model
 logits = conv_net(X, weights, biases, keep_prob)
 prediction = tf.nn.softmax(logits)
 
 # Define loss and optimizer
-mm=tf.nn.softmax_cross_entropy_with_logits(
-    logits=logits, labels=Y)
-loss_op = tf.reduce_mean(mm)
+loss_op = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
+    logits=logits, labels=Y))
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 train_op = optimizer.minimize(loss_op)
 
@@ -122,9 +129,7 @@ with tf.Session() as sess:
     for step in range(1, num_steps+1):
         batch_x, batch_y = mnist.train.next_batch(batch_size)
         # Run optimization op (backprop)
-        _,dd1,dd2=sess.run([train_op,prediction,logits], feed_dict={X: batch_x, Y: batch_y, keep_prob: 0.8})
-       
-        print("ddddddd\n",dd1[1],"ccccccc\n",dd2[1])
+        sess.run(train_op, feed_dict={X: batch_x, Y: batch_y, keep_prob: 0.8})
         if step % display_step == 0 or step == 1:
             # Calculate batch loss and accuracy
             loss, acc = sess.run([loss_op, accuracy], feed_dict={X: batch_x,

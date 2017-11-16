@@ -7,9 +7,10 @@ Project: https://github.com/aymericdamien/TensorFlow-Examples/
 
 from __future__ import print_function
 
-import tensorflow as tf
-import numpy
 import matplotlib.pyplot as plt
+import numpy
+import tensorflow as tf
+
 rng = numpy.random
 
 # Parameters
